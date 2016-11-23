@@ -11,7 +11,8 @@ export default (Component) => class AccordionWrappedComponent extends React.Comp
     }
 
     openItemHandler = id => {
-        let newOpenItemId = null;
+        let newOpenItemId = null
+        //ок, но я предпочитаю тернарный оператор двум setState
         if (this.state.openItemId !== id) {
             newOpenItemId = id;
         }
