@@ -1,24 +1,31 @@
 import React from 'react'
 
-export default (Component) => class AccordionWrappedComponent extends React.Component {
-
-    state = {
-        openItemId: null
-    };
-
-    render() {
-        return <Component {...this.props} {...this.state} openItemHandler = {this.openItemHandler}/>
+export default (Component) => class AccordionDecorator extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            openItemId: false
+        }
     }
 
-    openItemHandler = id => {
-        let newOpenItemId = null
-        //ок, но я предпочитаю тернарный оператор двум setState
-        if (this.state.openItemId !== id) {
-            newOpenItemId = id;
-        }
+    componentWillReceiveProps() {
+        //console.log('---', 'accordion receiving props')
+    }
 
+    componentWillUpdate() {
+        ///console.log('---', 'accordion will update')
+    }
+
+    render() {
+        return <Component {...this.props} isOpen = {this.isOpen} toggleOpenItem = {this.toggleOpenItem}/>
+    }
+
+    isOpen = id => this.state.openItemId == id
+
+    toggleOpenItem = id => ev => {
         this.setState({
-            openItemId: newOpenItemId
-        });
-    };
+            openItemId: this.state.openItemId == id ? null : id
+        })
+    }
+
 }
