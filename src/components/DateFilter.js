@@ -29,6 +29,7 @@ class DateFilter extends Component {
             selectedRange =
                 <p>
                     You chose from { moment(from).format('L') } to { moment(to).format('L') }.
+                    <a href="." onClick={ this.handleResetClick }>Reset</a>
                 </p>
         }
 
@@ -42,6 +43,14 @@ class DateFilter extends Component {
                 />
             </div>
         )
+    }
+
+    handleResetClick = e => {
+        e.preventDefault();
+        this.setState({
+            from: null,
+            to: null
+        });
     }
 
     handleDayClick = (e, day) => {
