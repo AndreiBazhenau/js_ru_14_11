@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import Comment from './Comment'
+import NewCommentForm from './NewCommentForm'
 import toggleOpen from '../decorators/toggleOpen'
 
 class CommentList extends Component {
@@ -14,7 +15,6 @@ class CommentList extends Component {
         comments: []
     }
 
-
     componentWillReceiveProps() {
         //console.log('---', 'CL receiving props')
     }
@@ -23,21 +23,26 @@ class CommentList extends Component {
         //console.log('---', 'CL will update')
     }
 
-
     render() {
         return (
             <div>
                 {this.getButton()}
+                {this.getCommentForm()}
                 {this.getList()}
             </div>
         )
     }
 
-
     getButton() {
         const { comments, isOpen, toggleOpen } = this.props
         if ( !comments.length) return <span>No comments yet</span>
         return <a href="#" onClick = {toggleOpen}>{isOpen ? 'hide' : 'show'} comments</a>
+    }
+
+    getCommentForm() {
+        const { isOpen } = this.props
+        if (!isOpen) return null
+        return <NewCommentForm />
     }
 
     getList() {
