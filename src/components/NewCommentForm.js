@@ -5,6 +5,7 @@ class NewCommentFrom extends Component {
     constructor() {
         super()
         this.state = {
+            //ок, только сюда еще user надо было поместить
             comment: ''
         }
     }
