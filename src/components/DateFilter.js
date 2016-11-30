@@ -6,23 +6,15 @@ import 'react-day-picker/lib/style.css'
 
 class DateFilter extends Component {
 
-    constructor(props) {
-        super(props)
-
-        const { defaultFrom, defaultTo } = this.props
-        this.state = {
-            from: defaultFrom,
-            to: defaultTo
-        }
-    }
-
     static propTypes = {
-        defaultFrom: PropTypes.instanceOf(Date),
-        defaultTo: PropTypes.instanceOf(Date)
+        selected: PropTypes.object.isRequired,
+        handleChange: PropTypes.func.isRequired
     };
 
     render() {
-        const { from, to } = this.state
+        const { selected } = this.props
+        const from = selected.from
+        const to = selected.to
 
         let selectedRange = null;
         if (from && to) {
@@ -46,16 +38,15 @@ class DateFilter extends Component {
     }
 
     handleResetClick = e => {
-        e.preventDefault();
-        this.setState({
-            from: null,
-            to: null
-        });
+        const { handleChange } = this.props
+        e.preventDefault()
+        handleChange({})
     }
 
     handleDayClick = (e, day) => {
-        const range = DateUtils.addDayToRange(day, this.state);
-        this.setState( range );
+        const { selected, handleChange } = this.props
+        const range = DateUtils.addDayToRange(day, selected)
+        handleChange(range)
     }
 }
 

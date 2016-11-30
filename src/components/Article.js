@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import moment from 'moment'
 import { findDOMNode } from 'react-dom'
 import CommentList from './CommentList'
 import { deleteArticle } from '../AC/articles'
@@ -22,9 +23,10 @@ class Article extends Component {
 
     render() {
         const { article, toggleOpen } = this.props
+        var date = moment(article.date).format("MMM Do YY");
         return (
             <section>
-                <h3 onClick = {toggleOpen}>{article.title}</h3>
+                <h3 onClick = {toggleOpen}>{article.title} ({moment(article.date).format("MMM Do YY")})</h3>
                 <a href = "#" onClick = {this.handleDeleteArticle}>delete me</a>
                 {this.getBody()}
             </section>

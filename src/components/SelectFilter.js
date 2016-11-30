@@ -6,31 +6,21 @@ import 'react-select/dist/react-select.css'
 
 class SelectFilter extends Component {
 
-    constructor(props) {
-        super(props)
-
-        const { defaultSelected } = this.props
-        this.state = {
-            selected: defaultSelected
-        }
-    }
-
     static propTypes = {
-        items: PropTypes.array.isRequired
+        items: PropTypes.array.isRequired,
+        selected: PropTypes.array.isRequired,
+        handleChange: PropTypes.func.isRequired
     };
 
     render() {
-        const { items } = this.props
-        const { selected } = this.state
+        const { items, selected, handleChange } = this.props
 
         return (
             <div>
-                <Select options = {items} value = {selected} onChange = {this.handleChange} multi = {true}/>
+                <Select options = {items} value = {selected} onChange = { handleChange } multi = {true}/>
             </div>
         )
     }
-
-    handleChange = selected => this.setState({ selected : selected })
 }
 
 export default SelectFilter
