@@ -1,37 +1,34 @@
 import React, { Component, PropTypes } from 'react'
-import moment from 'moment'
 import ArticleList from './ArticleList'
+import Select from 'react-select'
 import Chart from './Chart'
-import SelectFilter from './SelectFilter'
-import DateFilter from './DateFilter'
-
+import DateRange from './DateRange'
+import Counter from './Counter'
+import 'react-select/dist/react-select.css'
 
 class App extends Component {
-    static propTypes = {
-        articles: PropTypes.array.isRequired
-    };
+
+    state = {
+        selected: null
+    }
 
     render() {
-        const { articles } = this.props
-
-        const articleFilterItems = articles.map(article => ({
+        const options = [].map(article => ({
             label: article.title,
             value: article.id
         }))
-        const defaultArticleFilterValue = articleFilterItems[0]
-
-        const defaultDateFilterFrom = moment().toDate()
-        const defaultDateFilterTo = moment().add(1, 'w').toDate()
-
         return (
             <div>
+                <Counter />
                 <Chart />
-                <ArticleList articles={articles} />
-                <SelectFilter items = {articleFilterItems} defaultSelected = {defaultArticleFilterValue} />
-                <DateFilter defaultFrom = { defaultDateFilterFrom } defaultTo = { defaultDateFilterTo } />
+                <DateRange />
+                <ArticleList />
+                <Select options = {options} value = {this.state.selected} onChange = {this.handleChange} multi = {true}/>
             </div>
         )
     }
+
+    handleChange = selected => this.setState({ selected })
 }
 
 export default App

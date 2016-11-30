@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import Comment from './Comment'
-import NewCommentForm from './NewCommentForm'
 import toggleOpen from '../decorators/toggleOpen'
+import NewCommentForm from './NewCommentForm'
 
 class CommentList extends Component {
     static propTypes = {
@@ -15,6 +15,7 @@ class CommentList extends Component {
         comments: []
     }
 
+
     componentWillReceiveProps() {
         //console.log('---', 'CL receiving props')
     }
@@ -23,15 +24,16 @@ class CommentList extends Component {
         //console.log('---', 'CL will update')
     }
 
+
     render() {
         return (
             <div>
                 {this.getButton()}
-                {this.getCommentForm()}
-                {this.getList()}
+                {this.getBody()}
             </div>
         )
     }
+
 
     getButton() {
         const { comments, isOpen, toggleOpen } = this.props
@@ -39,17 +41,12 @@ class CommentList extends Component {
         return <a href="#" onClick = {toggleOpen}>{isOpen ? 'hide' : 'show'} comments</a>
     }
 
-    getCommentForm() {
-        const { isOpen } = this.props
-        if (!isOpen) return null
-        return <NewCommentForm />
-    }
-
-    getList() {
+    getBody() {
         const { comments, isOpen } = this.props
-        if (!isOpen || !comments.length) return null
+        const commentForm = <NewCommentForm />
+        if (!isOpen || !comments.length) return <div>{commentForm}</div>
         const commentItems = comments.map(comment => <li key = {comment.id}><Comment comment = {comment} /></li>)
-        return <ul>{commentItems}</ul>
+        return <div><ul>{commentItems}</ul>{commentForm}</div>
     }
 }
 
