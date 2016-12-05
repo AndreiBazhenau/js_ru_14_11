@@ -1,5 +1,4 @@
 import React, { Component, PropTypes }  from 'react'
-import moment from 'moment';
 import Article from './Article'
 import accordion from '../decorators/accordion'
 import { connect } from 'react-redux'
@@ -56,28 +55,17 @@ class ArticleList extends Component {
     }
 }
 
-function filterArticles(articles, filter) {
-    const selectedArticleIds = filter.articles.map(article => {
-        return article.value;
+export default connect(state => {
+    const { articles, filters } = state
+    const selected = filters.selected
+    const { from, to } = filters.dateRange
+
+    const filteredArticles = articles.filter(article => {
+        const published = Date.parse(article.date)
+        return (!selected.length || selected.includes(article.id)) &&
+            (!from || !to || (published > from && published < to))
     })
-
-    const dateFrom = filter.dateRange.from ? moment(filter.dateRange.from).startOf('day') : null
-    const dateTo = filter.dateRange.to ? moment(filter.dateRange.to).endOf('day') : null
-
-    return articles.filter(article => {
-        if (selectedArticleIds.length !== 0 && !selectedArticleIds.includes(article.id)) {
-            return false;
-        }
-
-        const articleDate = moment(article.date)
-        if (dateFrom && dateTo && (dateFrom > articleDate || dateTo < articleDate)) {
-            return false;
-        }
-
-        return true;
-    })
-}
-
-export default connect(state => ({
-    articles: filterArticles(state.articles, state.filter)
-}))(accordion(ArticleList))
+    return {
+        articles: filteredArticles
+    }
+})(accordion(ArticleList))

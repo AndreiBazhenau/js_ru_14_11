@@ -1,9 +1,15 @@
-import { UPDATE_FILTER } from '../constants'
+import { CHANGE_DATE_RANGE, CHANGE_SELECTION } from '../constants'
 
-//лучше разбей это на 2 AC
-export function updateFilter(filterParameters) {
+export function changeDateRange(dateRange) {
     return {
-        type: UPDATE_FILTER,
-        payload: filterParameters
+        type: CHANGE_DATE_RANGE,
+        payload: { dateRange }
+    }
+}
+
+export function changeSelection(selected) {
+    return {
+        type: CHANGE_SELECTION,
+        payload: { selected }
     }
 }
