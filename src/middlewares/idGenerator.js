@@ -10,6 +10,7 @@ function generateId() {
 
 export default store => next => action => {
     const { type } = action
+  //лучше придумать более общий способ; через мидлвару будут проходить все экшины, их стоит делать максимально реюзабельными
     switch (type) {
         case ADD_COMMENT:
             return next({ ...action, generatedId: generateId()})
