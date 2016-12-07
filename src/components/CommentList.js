@@ -6,6 +6,7 @@ import NewCommentForm from './NewCommentForm'
 
 class CommentList extends Component {
     static propTypes = {
+        articleId: PropTypes.string.isRequired,
         commentIds: PropTypes.array.isRequired,
         //from connect
         comments: PropTypes.array.isRequired,
@@ -45,8 +46,8 @@ class CommentList extends Component {
     }
 
     getBody() {
-        const { comments, isOpen } = this.props
-        const commentForm = <NewCommentForm />
+        const { articleId, comments, isOpen } = this.props
+        const commentForm = <NewCommentForm articleId = { articleId } />
         if (!isOpen || !comments.length) return <div>{commentForm}</div>
         const commentItems = comments.map(comment => <li key = {comment.id}><Comment comment = {comment} /></li>)
         return <div><ul>{commentItems}</ul>{commentForm}</div>

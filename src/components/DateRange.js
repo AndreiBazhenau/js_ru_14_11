@@ -12,9 +12,15 @@ class DateRange extends Component {
         changeDateRange(DateUtils.addDayToRange(day, range))
     }
 
+    handleResetClick = e => {
+        const { changeDateRange, range } = this.props
+        changeDateRange({})
+    }
+
     render() {
         const { from, to } = this.props.range;
         const selectedRange = from && to && `${from.toDateString()} - ${to.toDateString()}`
+        const resetLink = from && to && <a href="." onClick={ this.handleResetClick }>Reset</a>
         return (
             <div className="date-range">
                 <DayPicker
@@ -22,7 +28,7 @@ class DateRange extends Component {
                     selectedDays={ day => DateUtils.isDayInRange(day, { from, to }) }
                     onDayClick={ this.handleDayClick }
                 />
-                {selectedRange}
+                {selectedRange} {resetLink}
             </div>
         );
     }

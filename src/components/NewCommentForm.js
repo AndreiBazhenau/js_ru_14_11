@@ -1,13 +1,20 @@
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
+import { addComment } from '../AC/comments'
 
 class NewCommentForm extends Component {
+    static propTypes = {
+        articleId: PropTypes.string.isRequired,
+        addComment: PropTypes.func.isRequired
+    }
+
     state = {
         text: '',
         user: ''
     }
 
     handleChange = field => ev => {
-        if (ev.target.value.length > 5) return
+        // if (ev.target.value.length > 5) return
         this.setState({
             [field]: ev.target.value
         })
@@ -15,7 +22,10 @@ class NewCommentForm extends Component {
 
     handleSubmit = ev => {
         ev.preventDefault()
-        console.log('---', 'adding comment')
+
+        const { articleId, addComment } = this.props
+        addComment(articleId, { ...this.state })
+        
         this.setState({
             user: '',
             text: ''
@@ -33,4 +43,4 @@ class NewCommentForm extends Component {
     }
 }
 
-export default NewCommentForm
+export default connect(state => ({ }), { addComment })(NewCommentForm)
