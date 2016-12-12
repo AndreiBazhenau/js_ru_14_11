@@ -39,7 +39,7 @@ export default (articlesState = defaultState, action) => {
 
         case LOAD_ARTICLE + START:
             return articlesState.setIn(['entities', payload.id, 'loading'], true)
-
+        
         case LOAD_ARTICLE + SUCCESS:
             return articlesState.setIn(['entities', payload.id], new ArticleModel(payload.article))
     }
