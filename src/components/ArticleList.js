@@ -2,6 +2,8 @@ import React, { Component, PropTypes }  from 'react'
 import Article from './Article'
 import accordion from '../decorators/accordion'
 import { connect } from 'react-redux'
+import { loadAllArticles } from '../AC/articles'
+import Loader from './Loader'
 
 class ArticleList extends Component {
     static propTypes = {
@@ -11,22 +13,8 @@ class ArticleList extends Component {
         toggleOpenItem: PropTypes.func.isRequired
     }
 
-    componentWillMount() {
-        console.log('---', 'mounting')
-    }
-
     componentDidMount() {
-        console.log('---', 'mounted', this.containerRef)
-        console.log('---', this.refs)
-    }
-
-    componentWillReceiveProps(nexProps) {
-        //console.log('isEqual', Object.keys(nexProps).every(key => nexProps[key] == this.props[key]))
-        //console.log('---', 'AL receiving props')
-    }
-
-    componentWillUpdate() {
-        //console.log('---', 'AL will update')
+        this.props.loadAllArticles()
     }
 
     getContainerRef = ref => {
@@ -35,7 +23,8 @@ class ArticleList extends Component {
 
 
     render() {
-        const { articles, isOpen, toggleOpenItem } = this.props
+        const { articles, loading, isOpen, toggleOpenItem } = this.props
+        if (loading) return <Loader/>
 
         const articleItems = articles.map(article => (
             <li key = {article.id}>
@@ -60,12 +49,16 @@ export default connect(state => {
     const selected = filters.selected
     const { from, to } = filters.dateRange
 
-    const filteredArticles = articles.toArray().filter(article => {
-        const published = Date.parse(article.date)
-        return (!selected.length || selected.includes(article.id)) &&
-            (!from || !to || (published > from && published < to))
-    })
+    const filteredArticles = articles.entities
+        .valueSeq()
+        .toArray()
+        .filter(article => {
+            const published = Date.parse(article.date)
+            return (!selected.length || selected.includes(article.id)) &&
+                (!from || !to || (published > from && published < to))
+        })
     return {
-        articles: filteredArticles
+        articles: filteredArticles,
+        loading: articles.loading
     }
-})(accordion(ArticleList))
+}, { loadAllArticles })(accordion(ArticleList))

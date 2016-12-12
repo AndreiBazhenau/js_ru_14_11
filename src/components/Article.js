@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react'
-import moment from 'moment'
 import { findDOMNode } from 'react-dom'
 import CommentList from './CommentList'
-import { deleteArticle } from '../AC/articles'
+import Loader from './Loader'
+import { deleteArticle, loadArticle } from '../AC/articles'
 import { connect } from 'react-redux'
 
 class Article extends Component {
@@ -17,16 +17,19 @@ class Article extends Component {
         console.log('---', 'updating Article')
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isOpen && !this.props.isOpen && !nextProps.article.text) this.props.loadArticle(this.props.article.id)
+    }
+
     componentDidUpdate() {
         console.log('---', findDOMNode(this.refs.comments))
     }
 
     render() {
         const { article, toggleOpen } = this.props
-        var date = moment(article.date).format("MMM Do YY");
         return (
             <section>
-                <h3 onClick = {toggleOpen}>{article.title} ({moment(article.date).format("MMM Do YY")})</h3>
+                <h3 onClick = {toggleOpen}>{article.title}</h3>
                 <a href = "#" onClick = {this.handleDeleteArticle}>delete me</a>
                 {this.getBody()}
             </section>
@@ -37,11 +40,11 @@ class Article extends Component {
     getBody() {
         const { article, isOpen } = this.props
         if (!isOpen) return null
+        if (article.loading) return <Loader />
         return (
             <div>
                 <p>{article.text}</p>
-                {/*просто передай туда article*/}
-                <CommentList articleId = { article.id } commentIds = {article.comments} ref = "comments" />
+                <CommentList article = {article} ref = "comments" />
             </div>
         )
     }
@@ -65,5 +68,5 @@ Article.propTypes = {
 
 
 export default connect(null, {
-    deleteArticle
+    deleteArticle, loadArticle
 })(Article)

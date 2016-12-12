@@ -1,19 +1,47 @@
-import { normalizedArticles } from '../fixtures'
-import { ADD_COMMENT, DELETE_ARTICLE } from '../constants'
-import { Map } from 'immutable'
+import { DELETE_ARTICLE, LOAD_ALL_ARTICLES, ADD_COMMENT, LOAD_ARTICLE, SUCCESS, FAIL, START } from '../constants'
+import { arrayToMap, ReducerState } from '../utils'
+import { Record, Map } from 'immutable'
 
-const defaultArticles = normalizedArticles.reduce((acc, article) => {
-    return acc.set(article.id, article)
-}, new Map({}))
+const ArticleModel = Record({
+    id: null,
+    title: null,
+    comments: [],
+    text: null,
+    date: null,
+    loading: false
+})
 
-export default (articlesState = defaultArticles, action) => {
-    const { type, payload } = action
+const defaultArticles= arrayToMap([], ArticleModel)
+
+const defaultState = new ReducerState({
+    entities: defaultArticles,
+    loading: false
+})
+
+export default (articlesState = defaultState, action) => {
+    const { type, payload, generatedId, response } = action
 
     switch (type) {
         case DELETE_ARTICLE:
-            return articlesState.delete(payload.articleId)
+            return articlesState.deleteIn(['entities', payload.articleId])
+
         case ADD_COMMENT:
-            return articlesState.updateIn([payload.articleId], article => ({...article, comments: [...article.comments, action.generatedId ] }));
+            return articlesState.updateIn(['entities', payload.articleId, 'comments'],
+                comments => comments.concat(generatedId))
+
+        case LOAD_ALL_ARTICLES + START:
+            return articlesState.set('loading', true)
+
+        case LOAD_ALL_ARTICLES + SUCCESS:
+            return articlesState
+                .set('entities', arrayToMap(response, ArticleModel))
+                .set('loading', false)
+
+        case LOAD_ARTICLE + START:
+            return articlesState.setIn(['entities', payload.id, 'loading'], true)
+
+        case LOAD_ARTICLE + SUCCESS:
+            return articlesState.setIn(['entities', payload.id], new ArticleModel(payload.article))
     }
 
     return articlesState
