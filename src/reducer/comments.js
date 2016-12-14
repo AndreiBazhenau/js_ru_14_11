@@ -27,6 +27,8 @@ export default (comments = defaultState, action) => {
 
         case LOAD_COMMENTS_FOR_PAGE + SUCCESS:
             return comments
+                //Вот здесь не очень хорошо хранить на одном уровне и доступ по номерам страниц и 'total', 'pagerLoaded'
+                //+ я б предпочел хранить сами комменты в comments.entities, а по номеру страницы только их id
                 .setIn(['commentsForPages', payload.page, 'loading'], false)
                 .setIn(['commentsForPages', payload.page, 'loaded'], true)
                 .setIn(['commentsForPages', 'total'], response.total)
