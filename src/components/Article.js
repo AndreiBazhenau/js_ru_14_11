@@ -48,7 +48,7 @@ class Article extends Component {
         return (
             <div>
                 <p>{article.text}</p>
-                <CommentList articleId = {article.id} ref = "comments" />
+                <CommentList article = {article} ref = "comments" />
             </div>
         )
     }
