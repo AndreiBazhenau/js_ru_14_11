@@ -1,5 +1,4 @@
-import { ADD_COMMENT, LOAD_COMMENTS, START, SUCCESS, FAIL } from '../constants'
-import jquery from 'jquery'
+import { ADD_COMMENT, LOAD_COMMENTS } from '../constants'
 
 export function addComment(comment, articleId) {
     return {
@@ -11,24 +10,14 @@ export function addComment(comment, articleId) {
     }
 }
 
-export function loadComments(articleId) {
-    return (dispatch) => {
+export function checkAndLoadComments(articleId) {
+    return (dispatch, getState) => {
+        const { commentsLoaded, commentsLoading } = getState().articles.getIn(['entities', articleId])
+        if (commentsLoaded || commentsLoading) return null
         dispatch({
-            type: LOAD_COMMENTS + START,
-            payload: { articleId }
+            type: LOAD_COMMENTS,
+            payload: { articleId },
+            callAPI: `/api/comment?article=${articleId}`
         })
-
-        // NOTE: only for tests, not for production
-        setTimeout(() => {
-            jquery.get(`/api/comment`, { article: articleId })
-                .done(response => dispatch({
-                    type: LOAD_COMMENTS + SUCCESS,
-                    payload: { articleId, comments: response }
-                }))
-                .fail(error => dispatch({
-                    type: LOAD_COMMENTS + FAIL,
-                    payload: { articleId, error}
-                }))
-        }, 3000)
     }
 }
