@@ -1,14 +1,15 @@
-import { ADD_COMMENT, LOAD_COMMENTS, SUCCESS } from '../constants'
-import { arrayToMap, ReducerState } from '../utils'
-import { Record, Map } from 'immutable'
+import { ADD_COMMENT, LOAD_COMMENTS_FOR_ARTICLE, LOAD_COMMENTS_FOR_PAGE, START, SUCCESS } from '../constants'
+import { arrayToMap } from '../utils'
+import { Record, Map, List } from 'immutable'
 
 const CommentModel = Record({
     id: null,
     text: null,
     user: null
 })
-const defaultState = new ReducerState({
-    entities: new Map({})
+const defaultState = new Map({
+    commentsForArticles: new Map({}),
+    commentsForPages: new Map({})
 })
 
 export default (comments = defaultState, action) => {
@@ -18,8 +19,19 @@ export default (comments = defaultState, action) => {
         case ADD_COMMENT:
             return comments.set(generatedId, {...payload.comment, id: generatedId})
 
-        case LOAD_COMMENTS + SUCCESS:
-            return comments.mergeIn(['entities'], arrayToMap(response, CommentModel))
+        case LOAD_COMMENTS_FOR_ARTICLE + SUCCESS:
+            return comments.mergeIn(['commentsForArticles'], arrayToMap(response, CommentModel))
+
+        case LOAD_COMMENTS_FOR_PAGE + START:
+            return comments.setIn(['commentsForPages', payload.page, 'loading'], true)
+
+        case LOAD_COMMENTS_FOR_PAGE + SUCCESS:
+            return comments
+                .setIn(['commentsForPages', payload.page, 'loading'], false)
+                .setIn(['commentsForPages', payload.page, 'loaded'], true)
+                .setIn(['commentsForPages', 'total'], response.total)
+                .setIn(['commentsForPages', 'pagerLoaded'], true)
+                .setIn(['commentsForPages', payload.page, 'entities'], response.records)
     }
 
     return comments

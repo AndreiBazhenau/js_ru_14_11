@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { addComment, checkAndLoadComments } from '../AC/comments'
+import { addComment, checkAndLoadCommentsForArticle } from '../AC/comments'
 import Comment from './Comment'
 import Loader from './Loader'
 import toggleOpen from '../decorators/toggleOpen'
@@ -21,8 +21,8 @@ class CommentList extends Component {
     }
 
 
-    componentWillReceiveProps({ isOpen, checkAndLoadComments, article}) {
-        if (isOpen && !this.props.isOpen) checkAndLoadComments(article.id)
+    componentWillReceiveProps({ isOpen, checkAndLoadCommentsForArticle, article}) {
+        if (isOpen && !this.props.isOpen) checkAndLoadCommentsForArticle(article.id)
     }
 
     render() {
@@ -52,5 +52,5 @@ class CommentList extends Component {
 }
 
 export default connect((state, props) => ({
-    comments: (props.article.comments || []).map(id => state.comments.getIn(['entities', id]))
-}), { addComment, checkAndLoadComments })(toggleOpen(CommentList))
+    comments: (props.article.comments || []).map(id => state.comments.getIn(['commentsForArticles', id]))
+}), { addComment, checkAndLoadCommentsForArticle })(toggleOpen(CommentList))
